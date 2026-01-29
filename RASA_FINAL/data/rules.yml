@@ -1,0 +1,42 @@
+version: "3.1"
+
+rules:
+  - rule: Say hello
+    steps:
+      - intent: greet
+      - action: utter_greet
+
+  - rule: Respond to weather
+    steps:
+      - intent: ask_weather
+      - action: action_get_weather
+
+  - rule: Respond to activity
+    steps:
+      - intent: ask_activity
+      - action: action_suggest_activity
+
+  - rule: Suggest outfit by custom city weather
+    steps:
+      - intent: ask_outfit
+      - action: action_suggest_outfit
+
+  - rule: User provides city after outfit prompt
+    steps:
+      - intent: inform_city
+      - action: action_suggest_outfit
+
+  - rule: Morning briefing
+    steps:
+      - intent: ask_briefing
+      - action: action_morning_briefing
+
+  - rule: Say goodbye anytime the user says goodbye
+    steps:
+    - intent: goodbye
+    - action: utter_goodbye
+
+  - rule: Handle fallback
+    steps:
+      - intent: nlu_fallback
+      - action: action_default_fallback

@@ -1,0 +1,12 @@
+- story: weather then activity then outfit the briefing
+  steps:
+  - intent: greet
+  - intent: ask_weather
+  - action: action_get_weather
+  - intent: ask_activity
+  - action: action_suggest_activity
+  - intent: ask_outfit
+  - action: action_suggest_outfit
+  - intent: ask_briefing
+  - action: action_morning_briefing
+  - intent: goodbye

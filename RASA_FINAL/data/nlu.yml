@@ -1,0 +1,151 @@
+version: "3.1"
+
+nlu:
+- intent: greet
+  examples: |
+    - hi
+    - what's up
+    - good morning
+    - how are you
+    - hi!!!
+    - hello
+    - hey
+    - hello there
+    - good morning
+    - moin
+    - hey there
+    - let's go
+    - hey dude
+    - goodmorning
+
+
+- intent: ask_weather
+  examples: |
+    - what's the weather like today
+    - how is the weather
+    - how's outside
+    - weather update
+    - what's it like outside
+    - weather conditions
+    - weather conditions today
+    - tell me today's weather
+    - is it cold today
+    - weather today
+
+- intent: ask_activity
+  examples: |
+    - suggest an activity
+    - what should i do today
+    - i'm bored, what activity can i do 
+    - what can i do in a day such as this
+    - activities
+    - what can I do in this weather
+    - give me something to do
+    - activity ideas for today
+    - propose ideal activities for today's weather
+
+
+- intent: ask_outfit
+  examples: |
+    - what should I wear today in [London](GPE)
+    - how should I dress in [Paris](GPE)
+    - outfit recommendation for [Bangkok](GPE)
+    - what clothes do you suggest for [New York](GPE) today
+    - what should I wear in the weather in [Lima](GPE)
+    - recommend an outfit for [Chicago](GPE)
+    - clothes ideas for today in [Los Angeles](GPE)
+    - what can I wear today in [Seoul](GPE)
+    - outfit ideas for [Rio de Janeiro](GPE)
+    - what should I wear today
+    - how should I dress
+    - outfit recommendation
+    - what clothes do you suggest for today
+    - what should I wear in this weather 
+    - recommend an outfit for the day
+    - clothes ideas for today 
+    - what can I wear today 
+    - outfit ideas 
+
+- intent: inform_city
+  examples: |
+    - [New York](GPE)
+    - [San Francisco](GPE)
+    - [Los Angeles](GPE)
+    - [Paris](GPE)
+    - [Rome](GPE)
+    - [Seoul](GPE)    
+    - [Berlin](GPE)
+    - [Munich](GPE)    
+    - [Manila](GPE)
+    - [Sydney](GPE)
+    - [Budapest](GPE)    
+    - [Mexico city](GPE)
+    - [Krakow](GPE)    
+    - [Beijing](GPE)
+    - [Luxor](GPE)
+
+- intent: ask_briefing
+  examples: |
+    - give me a briefing on [politics](category) in [Greece](GPE)
+    - what's going on in [business](category) in [Germany](GPE) today 
+    - quick [entertainment](category) update in the [United States](GPE) 
+    - top news titles about the [environment](category) in [Mexico](GPE) 
+    - top news on [tourism](category) in [Norway](GPE)
+    - daily update on [crime](category) in [Denmark](country) please
+    - [crime](category) news in [China](GPE)
+    - daily [food](category) briefing for [Egypt](GPE)
+    - morning summary about the [world](category) in [Brazil](GPE)
+    - news from [Greece](GPE) about [tourism](category)
+
+- lookup: category
+  examples: |
+    - business
+    - crime
+    - domestic
+    - education
+    - entertainment
+    - environment
+    - food
+    - health
+    - lifestyle
+    - politics
+    - science
+    - sports
+    - technology
+    - top
+    - tourism
+    - world
+
+- intent: goodbye
+  examples: |
+    - cu
+    - cee you later
+    - good night
+    - bye
+    - goodbye
+    - have a nice day
+    - see you around
+    - bye bye
+    - see you later
+
+- intent: nlu_fallback
+  examples: |
+    - asdf
+    - qwerty
+    - foobar
+    - random 
+    - bynsdaodoqosd
+    - what should I eat today
+    - political aspirations
+    - academia
+    - history
+    - languages
+    - foo bar baz
+    - restaurants near me
+    - nuclear explosion chiropractor
+    - school
+    - pharmacy
+    - psychology
+    - capital
+    - king
+    - hateful speech

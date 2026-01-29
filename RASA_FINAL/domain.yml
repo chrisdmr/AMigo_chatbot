@@ -1,0 +1,65 @@
+version: "3.1"
+
+intents:
+  - greet
+  - ask_weather
+  - ask_activity
+  - ask_outfit
+  - ask_briefing
+  - goodbye
+  - nlu_fallback
+  - inform_city
+
+entities:
+  - city
+  - country
+  - category
+  - GPE
+
+slots:
+  weather:
+    type: text
+    influence_conversation: true
+    mappings:
+      - type: custom
+
+  city:
+    type: text
+    influence_conversation: true
+    mappings:
+      - type: from_entity
+        entity: GPE
+        intent: [inform_city, ask_outfit]
+
+  country:
+    type: text
+    influence_conversation: true
+    mappings:
+      - type: from_entity
+        entity: GPE
+        intent: [ask_briefing]
+
+  category:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: category
+
+
+responses:
+  utter_greet:
+  - text: "Hey! I'm AMigo. How can I help you?"
+  utter_outfit_error:
+  - text: "Sorry, I couldn't check the weather and recommend an outfit right now. Maybe try again later?"
+  utter_briefing_error:
+  - text: "Sorry, I couldn't prepare this morning's news right now.Maybe try again later?"
+  utter_goodbye:
+  - text: "Goodbye! Talk to you tomorrow morning!"
+
+actions:
+  - action_get_weather
+  - action_suggest_activity
+  - action_suggest_outfit
+  - action_morning_briefing
+  - action_default_fallback
