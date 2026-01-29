@@ -104,13 +104,19 @@ As for the morning news briefing scenario, AMigo integrates with the **NewsData.
 
 During the development of AMigo, several dialogue management, slot handling, entity recognition, and external API related challenges arose. The following section describes these very challenges, as well as the approaches used to address them.
 
-1. Slot resetting in API based tasks  
-   Challenge:  
-   Slots that had already been filled once during interactions with an API (e.g., city, country, category) persisted across turns where the user provided different values than they did the first time, leading to unintended reuse of outdated information and mismatched question-answer pairs in subsequent interactions.  
-   Solution:  
-   The explicit implementation of slot resetting was deemed necessary after the completion of each task in all API-based actions. Relevant slots are emptied once a response is delivered (via return \[SlotSet(key:, None)\], ensuring that each new user request is processed independently and and solidifying the user’s ability to make requests about multiple cities/countries/news categories.   
-2. Overly aggressive fallback threshold  
-   Challenge:
+1. Slot resetting in API based tasks
+
+Challenge:  
+
+Slots that had already been filled once during interactions with an API (e.g., city, country, category) persisted across turns where the user provided different values than they did the first time, leading to unintended reuse of outdated information and mismatched question-answer pairs in subsequent interactions. 
+
+Solution:  
+
+The explicit implementation of slot resetting was deemed necessary after the completion of each task in all API-based actions. Relevant slots are emptied once a response is delivered (via return \[SlotSet(key:, None)\], ensuring that each new user request is processed independently and and solidifying the user’s ability to make requests about multiple cities/countries/news categories.   
+
+2. Overly aggressive fallback threshold
+   
+Challenge:
 
 The default core\_fallback\_threshold value of 0.3 caused the dialogue manager to be overly cautious and falsely trigger fallback actions, even when user intents had been correctly understood. This resulted in unnecessary conversation interruptions.
 
@@ -118,35 +124,62 @@ Solution:
 
 After several trials, the core\_fallback\_threshold was increased to 0.76. This adjustment reduced excessive fallback triggering, allowing for a much smoother conversation flow by increasing the dialogue manager’s confidence.
 
-3. Country and city recognition in user input  
-   Challenge:  
-   The accurate recognition and extraction of the country and city names from the user input proved to be quite difficult. The first attempts involved the manual listing of various countries and cities in the NLU training data, with the hope that the system would learn to generalise and recognise such entities. However, this approach did not scale well and caused issues with multi-word entities (e.g., “Rio de Janeiro, New York”), as sometimes only part of the entity name got recognised (once the user asked for an outfit suggestion for New York, USA, and got a suggestion for York, UK instead), and as, occasionally, there were some issues with the city formatting, which needed to be very specific, so that the API URL would be valid.   
-   Solution:   
-   The approach that ended up being the best by far was using SPACY’s pretrained Named Entity Recognition (NER) model, which reliably identifies Geo-Political Entities (GPE). This significantly improved the recognition of multi-word entities and dramatically reduced the need for extensive manual training examples.  
-4. Category constraints in the news API   
-   Challenge:  
-   The news API only supports a predefined set of news categories. As such, there was a need to include a closed list of categories, which would be the only categories AMigo would recognise. If the user requested the news on some other domain, they would be informed that this specific category is invalid and that they will be presented with the overall top 3 news headlines instead..   
-   Solution:  
-   An exclusive lookup table was introduced for the category slot, thus restricting user input to API supported categories.   
-5. Country validation and standardization  
-   Challenge:  
-   Even though SPACY is quite successful at extracting GPE entities, not all extracted entities correspond to valid countries supported by the news API (if not country is *technically* if not GPE)  
-   Solution:  
-   The key to resolving this conundrum was the utilization of the country\_converter library, which even proved to be a double blessing in disguise. Not only did it try mapping the names of the extracted GPE entities to standardized ISO2 codes, thereby proving their country status if successful, but it also helped fill the country code variable in the API URL, while also accounting for different kinds of country name variants (e.g., United States of America, United States, USA). This method effectively narrows down user values to legitimate countries only.  
-   A similar approach is used for city names. However, fewer issues were encountered here, due to the broader geographic coverage of the weather API. It is however worth noting that, even though the user intent in the outfit recommendation action is to be presented with an outfit according to the weather in a specific city, the action is executable with any kind of GPE entry that [wttr.in](http://wttr.in) has meteorological data on, as the detection of a method to cross check the GPE’s city status was not possible at this time.  
-6. Activity recommendations without prior weather context  
-   Challenge:  
-   Users have the freedom to ask AMigo to recommend an activity according to the weather conditions, without having explicitly asked it about the weather yet, which could cause the weather slot to be empty.  
-   Solution:   
-   When weather information is unavailable, AMigo implements random weather selection by using random.choice, as it does during the “normal” pipeline (where the user first inquires about the weather and then requests an activity). This ensures the full functionality of the interaction, even in the absence of prior context.  
-7. Simulated vs API task slot management  
-   Challenge:   
-   The mock task and the real API integration tasks required different slot management strategies, as, in contrast to the latter, the mock task’s internal logic and state management benefited from slot persistence.  
-   Solution:   
-   The slot handling strategy was differentiated, as the weather slot is set once and is then used recursively in the mock action, while API-based tasks explicitly empty relevant slots after execution.  
-8. Pipeline modifications for improved robustness  
-   Challenge:
+3. Country and city recognition in user input
 
+Challenge:  
+
+The accurate recognition and extraction of the country and city names from the user input proved to be quite difficult. The first attempts involved the manual listing of various countries and cities in the NLU training data, with the hope that the system would learn to generalise and recognise such entities. However, this approach did not scale well and caused issues with multi-word entities (e.g., “Rio de Janeiro, New York”), as sometimes only part of the entity name got recognised (once the user asked for an outfit suggestion for New York, USA, and got a suggestion for York, UK instead), and as, occasionally, there were some issues with the city formatting, which needed to be very specific, so that the API URL would be valid.  
+
+Solution:   
+
+The approach that ended up being the best by far was using SPACY’s pretrained Named Entity Recognition (NER) model, which reliably identifies Geo-Political Entities (GPE). This significantly improved the recognition of multi-word entities and dramatically reduced the need for extensive manual training examples.
+
+4. Category constraints in the news API
+
+Challenge:  
+
+The news API only supports a predefined set of news categories. As such, there was a need to include a closed list of categories, which would be the only categories AMigo would recognise. If the user requested the news on some other domain, they would be informed that this specific category is invalid and that they will be presented with the overall top 3 news headlines instead.
+
+Solution:  
+   
+An exclusive lookup table was introduced for the category slot, thus restricting user input to API supported categories.   
+
+5. Country validation and standardization
+   
+Challenge:  
+
+Even though SPACY is quite successful at extracting GPE entities, not all extracted entities correspond to valid countries supported by the news API (if not country is *technically* if not GPE)  
+
+Solution:  
+
+The key to resolving this conundrum was the utilization of the country\_converter library, which even proved to be a double blessing in disguise. Not only did it try mapping the names of the extracted GPE entities to standardized ISO2 codes, thereby proving their country status if successful, but it also helped fill the country code variable in the API URL, while also accounting for different kinds of country name variants (e.g., United States of America, United States, USA). This method effectively narrows down user values to legitimate countries only.  
+
+A similar approach is used for city names. However, fewer issues were encountered here, due to the broader geographic coverage of the weather API. It is however worth noting that, even though the user intent in the outfit recommendation action is to be presented with an outfit according to the weather in a specific city, the action is executable with any kind of GPE entry that [wttr.in](http://wttr.in) has meteorological data on, as the detection of a method to cross check the GPE’s city status was not possible at this time.  
+
+6. Activity recommendations without prior weather context
+   
+Challenge:  
+
+Users have the freedom to ask AMigo to recommend an activity according to the weather conditions, without having explicitly asked it about the weather yet, which could cause the weather slot to be empty.  
+
+Solution:   
+   
+When weather information is unavailable, AMigo implements random weather selection by using random.choice, as it does during the “normal” pipeline (where the user first inquires about the weather and then requests an activity). This ensures the full functionality of the interaction, even in the absence of prior context.  
+   
+7. Simulated vs API task slot management
+   
+Challenge:
+   
+The mock task and the real API integration tasks required different slot management strategies, as, in contrast to the latter, the mock task’s internal logic and state management benefited from slot persistence.
+    
+Solution:
+   
+The slot handling strategy was differentiated, as the weather slot is set once and is then used recursively in the mock action, while API-based tasks explicitly empty relevant slots after execution.
+   
+8. Pipeline modifications for improved robustness
+     
+Challenge:
+   
 The default configuration pipeline was not optimal for entity extraction, Named Entity Recognition and constrained user inputs.
 
 Solution:
